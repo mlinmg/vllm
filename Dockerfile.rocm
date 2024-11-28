@@ -293,5 +293,34 @@ ENV TOKENIZERS_PARALLELISM=false
 # Performance environment variable.
 ENV HIP_FORCE_DEV_KERNARG=1
 
-CMD ["/bin/bash"]
+# Set up environment variables
+ENV HOME=/home/user
+ENV APP_HOME=$HOME/Pulsar
 
+# Install git and other necessary packages
+RUN apt-get update && \
+    apt-get install -y git curl && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Create user and set up directories
+RUN useradd -m -d $HOME user && \
+    mkdir -p $APP_HOME/configs && \
+    mkdir -p $HOME/.cache/huggingface && \
+    chown -R user:user $HOME
+
+# Set the working directory
+WORKDIR $APP_HOME
+
+# Copy the repository contents into the container
+COPY --chown=user:user . $APP_HOME
+
+# Switch to the non-root user
+USER user
+
+# Install dependencies
+WORKDIR $APP_HOME
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Set the entrypoint
+ENTRYPOINT ["python", "server.py"]
