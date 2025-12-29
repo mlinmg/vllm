@@ -240,3 +240,26 @@ def test_oov_decode(tokenizer, fast):
 
     assert decoded_text == ""
     assert out_ids == [len(tokenizer)]
+
+
+@pytest.mark.parametrize("tokenizer_name", [
+    "mistralai/Pixtral-12B-2409",
+    "facebook/opt-125m",
+    "gpt2",
+])
+@pytest.mark.parametrize("text", TRUTH)
+def test_batch_decode_vs_decode(tokenizer, text):
+    token_ids = tokenizer(text, add_special_tokens=False).input_ids
+
+    # batch_decode on single tokens
+    batch_result = tokenizer.batch_decode([[tid] for tid in token_ids])
+
+    # decode in loop
+    loop_result = [tokenizer.decode([tid]) for tid in token_ids]
+
+    assert batch_result == loop_result
+
+    full_batch = tokenizer.batch_decode([token_ids])[0]
+    full_decode = tokenizer.decode(token_ids)
+
+    assert full_batch == full_decode
