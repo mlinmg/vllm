@@ -106,6 +106,9 @@ class TokenizerLike(Protocol):
     def decode(self, ids: list[int] | int, skip_special_tokens: bool = False) -> str:
         raise NotImplementedError
 
+    def batch_decode(self, ids: list[int] | list[list[int]], skip_special_tokens: bool = False) -> list[str]:
+        raise NotImplementedError
+
     def convert_ids_to_tokens(
         self,
         ids: list[int],

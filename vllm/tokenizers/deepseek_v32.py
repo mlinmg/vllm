@@ -167,6 +167,9 @@ class DeepseekV32Tokenizer(CachedHfTokenizer):
     def decode(self, ids: list[int] | int, skip_special_tokens: bool = False) -> str:
         return self.tokenizer.decode(ids, skip_special_tokens=skip_special_tokens)
 
+    def batch_decode(self, ids: list[int] | list[list[int]], skip_special_tokens: bool = False) -> list[str]:
+        return self.tokenizer.batch_decode(ids, skip_special_tokens=skip_special_tokens)
+
     def convert_ids_to_tokens(
         self,
         ids: list[int],

@@ -117,3 +117,6 @@ class CachedHfTokenizer(TokenizerLike):
             tokenizer.add_special_tokens(special_tokens_map)
 
         return get_cached_tokenizer(tokenizer)
+
+    def batch_decode(self, ids: list[int] | list[list[int]], skip_special_tokens: bool = False) -> list[str]:
+        return self.batch_decode(ids, skip_special_tokens)
