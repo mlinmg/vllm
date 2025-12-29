@@ -94,14 +94,11 @@ def convert_ids_list_to_tokens(
       Python list of token string representations
 
     """
-    token_str_lst = []
-    for token_id in token_ids:
-        # use default skip_special_tokens.
-        token_str = tokenizer.decode([token_id])
-        if token_str is None:
-            token_str = ""
-        token_str_lst.append(token_str)
-    return token_str_lst
+    # much more efficient rather than manually iterating the token list
+    # since under the hoods transformers uses multiprocessing w/ rust
+    # since the signature ensure us we never get a None, we can skip this costly check
+    # https://huggingface.co/docs/transformers/main_classes/tokenizer#transformers.TokenizersBackend.batch_decode
+    return tokenizer.batch_decode(token_ids)
 
 
 # Based on
